@@ -1,44 +1,63 @@
+// Get the container element
 const container = document.getElementById('webgl-overlay');
-        const renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true,
-        });
-        
-        // Set the renderer size to the window size initially
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 1;
+// Create the renderer
+const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+});
 
-        const video = document.querySelector('.background-video');
-        const videoTexture = new THREE.VideoTexture(video);
-        videoTexture.minFilter = THREE.LinearFilter;
-        videoTexture.magFilter = THREE.LinearFilter;
-        videoTexture.format = THREE.RGBFormat;
+// Set the renderer size to the window size initially
+renderer.setSize(window.innerWidth, window.innerHeight);
+container.appendChild(renderer.domElement);
 
-        const uniforms = {
-            videoTexture: { value: videoTexture },
-            mouse: { value: { x: 0.5, y: 0.5 } },
-            time: { value: 0 },
-        };
+// Create the scene
+const scene = new THREE.Scene();
 
-        const vertexShader = `
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-        `;
+// Create an orthographic camera
+const camera = new THREE.OrthographicCamera(
+    window.innerWidth / -2, // left
+    window.innerWidth / 2,  // right
+    window.innerHeight / 2, // top
+    window.innerHeight / -2, // bottom
+    -1000, // near
+    1000 // far
+);
+camera.position.z = 1;
+scene.add(camera);
 
-        const fragmentShader = `
-        uniform sampler2D videoTexture;
-        uniform vec2 mouse;
-        uniform float time;
-        varying vec2 vUv;
+// Get the video element and create a texture
+const video = document.querySelector('.background-video');
+const videoTexture = new THREE.VideoTexture(video);
+videoTexture.minFilter = THREE.LinearFilter;
+videoTexture.magFilter = THREE.LinearFilter;
+videoTexture.format = THREE.RGBFormat;
 
-        // Simplex noise function (advanced)
+// Define uniforms
+const uniforms = {
+    videoTexture: { value: videoTexture },
+    mouse: { value: new THREE.Vector2(0.5, 0.5) },
+    time: { value: 0 },
+    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+};
+
+// Vertex shader
+const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+`;
+
+const fragmentShader = `
+uniform sampler2D videoTexture;
+uniform vec2 mouse;
+uniform float time;
+uniform vec2 resolution; // Added resolution uniform
+varying vec2 vUv;
+
+// Simplex noise function (advanced)
 vec3 mod289(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
@@ -56,149 +75,155 @@ float simplexNoise(vec2 v) {
                         0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
                        -0.577350269189626,  // -1.0 + 2.0 * C.x
                         0.024390243902439); // 1.0 / 41.0
-                // First corner
-                vec2 i  = floor(v + dot(v, C.yy) );
-                vec2 x0 = v -   i + dot(i, C.xx);
+    // First corner
+    vec2 i  = floor(v + dot(v, C.yy) );
+    vec2 x0 = v -   i + dot(i, C.xx);
 
-                // Other corners
-                vec2 i1;
-                //i1.x = step( x0.y, x0.x ); // x0.x > x0.y ? 1.0 : 0.0
-                //i1.y = 1.0 - i1.x;
-                i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-                // x0 = x0 - 0.0 + 0.0 * C.xx ;
-                // x1 = x0 - i1 + 1.0 * C.xx ;
-                // x2 = x0 - 1.0 + 2.0 * C.xx ;
-                vec4 x12 = x0.xyxy + C.xxzz;
-                x12.xy -= i1;
+    // Other corners
+    vec2 i1;
+    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
 
-                // Permutations
-                i = mod289(i); // Avoid truncation effects in permutation
-                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-                + i.x + vec3(0.0, i1.x, 1.0 ));
+    // Permutations
+    i = mod289(i); // Avoid truncation effects in permutation
+    vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0))
+                   + i.x + vec3(0.0, i1.x, 1.0));
 
-                vec3 m = max(0.5 - vec3(
-                dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)
-                ), 0.0);
-                m = m*m ;
-                m = m*m ;
+    vec3 m = max(0.5 - vec3(
+        dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)
+    ), 0.0);
+    m = m * m;
+    m = m * m;
 
-                // Gradients: 41 points uniformly over a unit circle.
-                // The ring size 41 was chosen because it is coprime with 289 (see
-                // permutation in vec3 permute(vec3 x)). Therefore, the "random" numbers
-                // generated by permute will be uniformly distributed over the unit circle.
-                vec3 x = 2.0 * fract(p * C.www) - 1.0;
-                vec3 h = abs(x) - 0.5;
-                vec3 ox = floor(x + 0.5);
-                vec3 a0 = x - ox;
+    // Gradients: 41 points uniformly over a unit circle.
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
 
-                // Normalise gradients implicitly by scaling m
-                m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+    // Normalize gradients implicitly by scaling m
+    m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
 
-                // Compute final noise value at P
-                vec3 g;
-                g.x  = a0.x  * x0.x  + h.x  * x0.y;
-                g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-                return 130.0 * dot(m, g);
-            }
+    // Compute final noise value at P
+    vec3 g;
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+    return 130.0 * dot(m, g);
+}
 
-            void main() {
-                vec2 uv = vUv;
+void main() {
+    vec2 uv = vUv;
 
-                float distToMouse = distance(uv, mouse);
-                float mouseEffect = smoothstep(0.15, 0.0, distToMouse);
-            vec2 turbulence = vec2(
-                    simplexNoise(uv * 3.0 + time * 0.1),
-                    simplexNoise(uv * 1.5 - time * 0.1)
-            ) * 0.25;
+    // Calculate the aspect ratio
+    float aspect = resolution.x / resolution.y;
 
-            turbulence += vec2(
-                simplexNoise(uv * 1.5 + time * 0.05),
-                simplexNoise(uv * 3.0 - time * 0.05)
-            ) * 0.2;
+    // Adjust the UV coordinates for aspect ratio correction
+    vec2 diff = uv - mouse;
+    diff.x *= aspect;
+    float distToMouse = length(diff);
 
-            uv += turbulence * (0.1 - mouseEffect);
+    float mouseEffect = smoothstep(0.3, 0.0, distToMouse);
 
-            vec4 color = texture2D(videoTexture, uv);
+    // Turbulence calculation
+    vec2 turbulence = vec2(
+        simplexNoise(uv * 3.0 + time * 0.1),
+        simplexNoise(uv * 1.5 - time * 0.1)
+    ) * 0.25;
 
-            vec3 black = vec3(0.0, 0.0, 0.0);
-            vec3 darkBlue = vec3(0.0, 0.1, 0.1);
-            vec3 blendedColor = mix(black, darkBlue, mouseEffect);
+    turbulence += vec2(
+        simplexNoise(uv * 1.5 + time * 0.05),
+        simplexNoise(uv * 3.0 - time * 0.05)
+    ) * 0.2;
 
-            color.rgb = color.rgb * (1.0 - mouseEffect) + blendedColor * mouseEffect;
+    uv += turbulence * (0.1 - mouseEffect);
 
-            gl_FragColor = color;
-        }
-        `;
+    vec4 color = texture2D(videoTexture, uv);
 
-        const material = new THREE.ShaderMaterial({
-            vertexShader,
-            fragmentShader,
-            uniforms,
-        });
+    vec3 black = vec3(0.0, 0.0, 0.0);
+    vec3 darkBlue = vec3(0.0, 0.1, 0.1);
+    vec3 blendedColor = mix(black, darkBlue, mouseEffect);
 
-        const aspect = window.innerWidth / window.innerHeight;
-        const geometry = new THREE.PlaneGeometry(aspect * 2, aspect * 2);
-        const plane = new THREE.Mesh(geometry, material);
-        scene.add(plane);
+    color.rgb = color.rgb * (1.0 - mouseEffect) + blendedColor * mouseEffect;
 
-        let targetMouseX = 0;
-        let targetMouseY = 0;
-        let currentMouseX = 0;
-        let currentMouseY = 0;
-        const smoothness = 0.05;
+    gl_FragColor = color;
+}
+`;
 
-        window.addEventListener('load', () => {
-            targetMouseX = 0.5;  // Center of the screen
-            targetMouseY = 0.5;
-        });
+        // Create the shader material
+const material = new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    uniforms,
+});
 
-        window.addEventListener('mousemove', (event) => {
-            targetMouseX = event.clientX / window.innerWidth;
-            targetMouseY = 1 - (event.clientY / window.innerHeight);
-        });
+// Create the plane geometry to match the window size
+const geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight);
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
 
-        function updateMousePosition() {
-            currentMouseX += (targetMouseX - currentMouseX) * smoothness;
-            currentMouseY += (targetMouseY - currentMouseY) * smoothness;
-            uniforms.mouse.value.x = currentMouseX;
-            uniforms.mouse.value.y = currentMouseY;
-        }
+// Mouse interaction variables
+let targetMouseX = 0;
+let targetMouseY = 0;
+let currentMouseX = 0;
+let currentMouseY = 0;
+const smoothness = 0.05;
 
-        // Ensure the video is updating continuously
+// Initial mouse position
+window.addEventListener('load', () => {
+    targetMouseX = 0.5;
+    targetMouseY = 0.5;
+});
+
+// Mouse move event
+window.addEventListener('mousemove', (event) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    targetMouseX = (event.clientX - rect.left) / rect.width;
+    targetMouseY = 1 - ((event.clientY - rect.top) / rect.height);
+});
+
+// Update mouse position
+function updateMousePosition() {
+    currentMouseX += (targetMouseX - currentMouseX) * smoothness;
+    currentMouseY += (targetMouseY - currentMouseY) * smoothness;
+    uniforms.mouse.value.x = currentMouseX;
+    uniforms.mouse.value.set(currentMouseX, currentMouseY);
+}
+
+// Ensure the video is updating continuously
+videoTexture.needsUpdate = true;
+
+// Handle window resizing
+window.addEventListener('resize', () => {
+    // Resize the renderer to the window's current dimensions
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Update the camera's projection matrix
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    // Update the plane geometry if necessary
+    plane.geometry.dispose();
+    plane.geometry = new THREE.PlaneGeometry(2, 2);
+
+    // Update the resolution uniform
+    uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+});
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Update uniforms
+    updateMousePosition();
+    uniforms.time.value += 0.05;
+
+    // Update the video texture
+    if (video.readyState >= video.HAVE_CURRENT_DATA) {
         videoTexture.needsUpdate = true;
+    }
 
-        // Event listener to ensure the video plays continuously
-        video.addEventListener('play', () => {
-            video.play();
-        });
+    renderer.render(scene, camera);
+}
 
-        // Handle window resizing
-        window.addEventListener('resize', () => {
-            // Resize the renderer to the window's current dimensions
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            // Adjust the aspect ratio of the camera
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-
-            // Adjust the geometry of the plane according to the new aspect ratio
-            const aspect = window.innerWidth / window.innerHeight;
-            plane.geometry.dispose();
-            plane.geometry = new THREE.PlaneGeometry(2, 2);
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Continuously ensure the video texture is updated
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                videoTexture.needsUpdate = true;
-            }
-
-            updateMousePosition();
-            uniforms.time.value += 0.05;
-            
-            renderer.render(scene, camera);
-        }
-
-        animate();
+animate();
