@@ -1,8 +1,9 @@
 /* Reset and global styles */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Unicase:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Unicase:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 * {
   margin: 0;
@@ -13,13 +14,17 @@
 body, html {
   height: 100%;
   font-family: Arial, sans-serif;
+  overflow: visible;
+  scroll-behavior: smooth;
 }
 
-.section {
+.section, #section {
   width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: visible;
 }
 
 /* Full-screen video section */
@@ -28,12 +33,12 @@ body, html {
   flex-direction: column;
   align-items:flex-start;
   justify-content: space-between;
-
   height: 100vh;
 
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   padding: 1vh 3vh 20vh 3vh;
+  z-index: 1;
 }
 
 /* Video as background */
@@ -74,7 +79,7 @@ body, html {
 
 .main-title {
   font-family: 'Cormorant Unicase', serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 10vw;
   line-height: normal;
   letter-spacing: 0;
@@ -94,7 +99,7 @@ body, html {
   height: fit-content;
 
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 
   list-style-type: none;
 
@@ -119,7 +124,7 @@ body, html {
   height: auto;
   
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   color: #FAFAFA;
 
   font-family: 'Poppins', sans-serif;
@@ -144,7 +149,7 @@ body, html {
 
   gap: 50px;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 
   list-style-type: none;
 }
@@ -194,7 +199,7 @@ body, html {
   justify-content: center;
   align-items: center;
   z-index: 9000;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .loader-content {
@@ -268,5 +273,389 @@ body, html {
 .placeholder-section {
   width: 100%;
   height: 200vh;
+  background-color: #fff;
+}
+
+.initial, .full {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 50px;
+
+  position: relative;
+  overflow: visible;
+  padding: 1vh 3vh 10vh 3vh;
+
   background-color: #000;
+}
+
+.initial .title .main-title {
+  font-size: 8vw;
+}
+
+.full .title .main-title {
+  font-size: 5vw;
+}
+
+.secodnary-title {
+  font-family: 'Cormorant Unicase', serif;
+  font-weight: 300;
+  font-size: 2vw;
+  line-height: normal;
+  letter-spacing: 0;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.title-description {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  height: fit-content;
+
+  padding: 0;
+  overflow: visible;
+
+  color: #000;
+}
+
+.page-number {
+  font-family: 'Lato', sans-serif;
+  font-weight: 100;
+  font-size: 2vw;
+  line-height: normal;
+  letter-spacing: 0;
+  vertical-align: middle;
+  text-align: center;
+
+  text-transform: uppercase;
+
+  color: #B4B4B4;
+}
+
+.description-practices {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+
+  width: 100%;
+  height: fit-content;
+
+  padding: 0;
+  overflow: visible;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: baseline;
+
+  gap: 30px;
+
+  width: max-content;
+}
+
+.practicies {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: end;
+
+  gap: 30px;
+
+  width: max-content;
+}
+
+.third-header {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0;
+  vertical-align: middle;
+  text-align: center;
+
+  text-transform: uppercase;
+
+  color: #fff;
+}
+
+.description .third-header {
+  font-size: 1.5vw;
+}
+
+.description .body-text {
+  font-family: 'Lato', sans-serif;
+  font-size: 1.2vw;
+  font-weight: 300;
+  line-height: normal;
+  letter-spacing: 0;
+  vertical-align: middle;
+  text-align: left;
+
+  width: 50%;
+
+  color: #B4B4B4;
+}
+
+.practicies .third-header {
+  font-size: 1.8vw;
+}
+
+.practicies-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: end;
+
+  gap: 10px;
+
+  width: max-content;
+  height: fit-content;
+
+  padding: 0;
+  overflow: visible;
+
+  list-style-type: none;
+
+  font-family: 'Lato', sans-serif;
+  font-size: 1.2vw;
+  font-weight: 300;
+  line-height: normal;
+  letter-spacing: 0;
+  vertical-align: middle;
+  text-align: left;
+
+  color: #DDDDDD;
+}
+
+.practicies-list li {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center; 
+
+  gap: 10px;
+}
+
+.bullet {
+  font-weight: 300;
+}
+
+.process {
+  padding-bottom: 20vh;
+  background-color: #9DF1E3;
+}
+
+.process .title-description * {
+  color: #000;
+}
+
+.full {
+  background-color: #9DF1E3;
+  padding-bottom: 0;
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+}
+
+.full *, .full .title {
+  color: #000;
+}
+
+.full .body-text, .full .practicies-list *, .full .page-number {
+  color: #1E1E1E;
+
+}
+
+.full .description, .full .third-header {
+  font-size: 1.5vw;
+}
+
+.additional-practicies {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: baseline;
+
+  gap: 30px;
+
+  width: max-content;
+}
+
+.additional-practicies .practicies-list {
+  align-items: baseline;
+}
+
+.goals {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: baseline;
+
+  gap: 50px;
+
+  width: 60%;
+}
+
+.full-tabs {
+  width: 100%;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+
+  list-style-type: none;
+  text-transform: uppercase;
+  color: #1E1E1E;
+
+  font-family: 'Inter', sans-serif;
+  font-weight: 200;
+  font-size: 1vw;
+}
+
+.tabs .active {
+  font-weight: 600;
+}
+
+.business-analysis .full {
+  display: none;
+
+}
+
+.business-analysis .full.active {
+  display: flex;
+}
+
+.content {
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Initial state of the second section */
+.section.business-analysis.initial {
+  position: fixed;
+  bottom: -100vh; /* Start off-screen */
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 100;
+}
+
+/* Keyframe animation */
+@keyframes slideUp {
+  from {
+    bottom: -100vh;
+  }
+  to {
+    bottom: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+      bottom: 0;
+  }
+  to {
+      bottom: -100vh;
+  }
+}
+
+.section.business-analysis.initial.animate-out {
+  animation: slideDown 1.5s ease-in-out forwards;
+}
+
+/* Animate the second section sliding up */
+.section.business-analysis.initial.animate-in {
+  animation: slideUp 1.5s ease-in-out forwards;
+}
+
+/* Hide the content initially */
+.hidden-content {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  height: auto; /* Ensure the content height can be measured */
+  overflow: hidden; /* Prevent overflow issues during animation */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.hidden-content.visible {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Reset the position after animations */
+.section.business-analysis.initial.position-static {
+  position: fixed;
+  top: 0;
+  left: auto;
+  bottom: auto;
+  right: auto;
+  transform: none; /* Reset any transforms */
+}
+
+/* Hide the content initially */
+.description-practices {
+  overflow: hidden; /* Prevent layout shifts during animations */
+}
+
+/* Slide-up animation for title-description */
+/* Slide-up animation */
+.title-description {
+  position: absolute; /* Keep this as relative */
+  width: 100%;
+  padding-right: 5vw;
+  transition: transform 1.2s ease-in-out; /* Ensure the transition is set */
+  z-index: 1;
+}
+.title-description.slide-up {
+  transform: translateY(0); /* Reset any transform effect */
+}
+
+/* General fade and blur effect */
+.fade-blur {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(0px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out;
+}
+
+.fade-blur.active {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+/* Staggered animations for child elements */
+.practicies-list li {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.practicies-list li.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.secodary-trace-bg, .third-trace-bg {
+  position: absolute;
+  width: 0%;
+  height: 0%;
+  background-color: red;
+  z-index: 0;
 }

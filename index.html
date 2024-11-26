@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dmitrij Titarenko</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cursor.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
 </head>
 <body>
     <div id="loader">
         <div class="secondary-bg"></div>
+        <div class="third-bg"></div>
         <div class="loader-content">
             <span class="loader-text">Dmitrij Titarenko</span>
             <span class="loader-counter">0</span>
         </div>
-        <div class="third-bg"></div>
     </div>
     <div class="section full-screen-video">
         <video autoplay loop muted playsinline class="background-video">
@@ -42,8 +43,195 @@
             </ul>
         </div>
     </div>
-    <div class="placeholder-section"></div>
+    <div class="section business-analysis initial">
+      <div class="secondary-trace-bg"></div>
+      <div class="third-trace-bg"></div>
+      <div class="title-description">
+        <div class="title">
+          <h2 class="secodnary-title">My Work</h2>
+          <h1 class="main-title">Business Analysis</h1>
+        </div>
+        <p class="page-number">- 00</p>
+      </div>
+      <div class="description-practices hidden-content">
+        <div class="description">
+          <h3 class="third-header fade-blur">Description</h3>
+          <p class="body-text fade-blur">Business analysis is a professional discipline focused on identifying business needs and determining solutions to business problems.</p>
+        </div>
+        <div class="practicies">
+          <h3 class="third-header fade-blur">Practices</h3>
+          <ul class="practicies-list">
+            <li class="fade-blur">BPMN<span class="bullet">-</span></li>
+            <li class="fade-blur">UML<span class="bullet">-</span></li>
+            <li class="fade-blur">RTM<span class="bullet">-</span></li>
+            <li class="fade-blur">Wireframing / Mockuping<span class="bullet">-</span></li>
+            <li class="fade-blur">Risk Management<span class="bullet">-</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+   <!-- <div class="section business-analysis initial process">
+      <div class="title-description">
+        <div class="title">
+          <h2 class="secodnary-title">Business Analysis</h2>
+          <h1 class="main-title">Process</h1>
+        </div>
+        <p class="page-number">- 01</p>
+      </div>
+    </div>
+    <div class="section business-analysis full" id="section">
+      <div class="full-tabs">
+        <ul class="tabs">
+          <li class="tab active">Requirements Gathering</li>
+          <li class="tab">Documentation and Modeling</li>
+          <li class="tab">Validation and Prioritization</li>
+          <li class="tab">Support and Monitoring</li>
+        </ul>
+      </div>
+      <div class="business-analysis full active content" id="tab1">
+        <div class="title-description">
+          <div class="title">
+            <h1 class="main-title">Requirements Gathering</h1>
+          </div>
+          <p class="page-number">- 01</p>
+        </div>
+        <div class="description-practices">
+          <div class="goals">
+            <div class="description">
+              <h3 class="third-header">Goal</h3>
+              <p class="body-text">To deeply understand business needs, problems, and objectives by gathering and analyzing requirements. This ensures the root causes of issues are addressed, setting the foundation for a solution aligned with organizational goals.</p>
+            </div>
+            <div class="additional-practicies">
+              <h3 class="third-header">When</h3>
+              <ul class="practicies-list">
+                <li><span class="bullet">-</span>During the Project Initiation or Discovery Phase</li>
+                <li><span class="bullet">-</span>When New Requirements or Challenges Arise</li>
+              </ul>
+            </div>
+          </div>  
+          <div class="practicies">
+            <h3 class="third-header">How</h3>
+            <ul class="practicies-list">
+              <li>Interviews with Stakeholders<span class="bullet">-</span></li>
+              <li>Workshops for Collaboration<span class="bullet">-</span></li>
+              <li>Surveys or Questionnaires<span class="bullet">-</span></li>
+              <li>Observation of Workflows<span class="bullet">-</span></li>
+              <li>Analysis of Existing Documentation<span class="bullet">-</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="business-analysis full content" id="tab2">
+        <div class="title-description">
+          <div class="title">
+            <h1 class="main-title">Documentation and Modeling</h1>
+          </div>
+          <p class="page-number">- 02</p>
+        </div>
+        <div class="description-practices">
+          <div class="goals">
+            <div class="description">
+              <h3 class="third-header">Goal</h3>
+              <p class="body-text">To structure and present requirements clearly for all stakeholders, ensuring effective communication and reducing ambiguities. This helps developers and stakeholders stay aligned.</p>
+            </div>
+            <div class="additional-practicies">
+              <h3 class="third-header">When</h3>
+              <ul class="practicies-list">
+                <li><span class="bullet">-</span>After Gathering and Analyzing Requirements</li>
+                <li><span class="bullet">-</span>Before the Implementation Phase</li>
+              </ul>
+            </div>
+          </div>  
+          <div class="practicies">
+            <h3 class="third-header">How</h3>
+            <ul class="practicies-list">
+              <li>Create Diagrams (e.g., BPMN, UML)<span class="bullet">-</span></li>
+              <li>Write User Stories or Use Cases<span class="bullet">-</span></li>
+              <li>Build Prototypes or Wireframes<span class="bullet">-</span></li>
+              <li>Maintain a Requirements Traceability Matrix (RTM)<span class="bullet">-</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="business-analysis full content" id="tab3">
+        <div class="title-description">
+          <div class="title">
+            <h1 class="main-title">Validation and Prioritization</h1>
+          </div>
+          <p class="page-number">- 03</p>
+        </div>
+        <div class="description-practices">
+          <div class="goals">
+            <div class="description">
+              <h3 class="third-header">Goal</h3>
+              <p class="body-text">To confirm that requirements are accurate, feasible, and aligned with objectives, while prioritizing high-value needs. This step reduces risks and ensures optimal resource use.</p>
+            </div>
+            <div class="additional-practicies">
+              <h3 class="third-header">When</h3>
+              <ul class="practicies-list">
+                <li><span class="bullet">-</span>After Documentation is Complete</li>
+                <li><span class="bullet">-</span>Iteratively During the Project as Priorities Evolve</li>
+              </ul>
+            </div>
+          </div>  
+          <div class="practicies">
+            <h3 class="third-header">How</h3>
+            <ul class="practicies-list">
+              <li>Review Sessions with Stakeholders<span class="bullet">-</span></li>
+              <li>Use Prioritization Methods (e.g., MoSCoW, Kano)<span class="bullet">-</span></li>
+              <li>Resolve Conflicts or Ambiguities<span class="bullet">-</span></li>
+              <li>Iterate Based on Feedback<span class="bullet">-</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="business-analysis full content" id="tab4">
+        <div class="title-description">
+          <div class="title">
+            <h1 class="main-title">Support and Monitoring</h1>
+          </div>
+          <p class="page-number">- 04</p>
+        </div>
+        <div class="description-practices">
+          <div class="goals">
+            <div class="description">
+              <h3 class="third-header">Goal</h3>
+              <p class="body-text">To ensure the solution aligns with agreed requirements during development and testing. This ensures the delivered product meets business needs.</p>
+            </div>
+            <div class="additional-practicies">
+              <h3 class="third-header">When</h3>
+              <ul class="practicies-list">
+                <li><span class="bullet">-</span>During Implementation and Testing</li>
+                <li><span class="bullet">-</span>Until the Solution is Validated and Delivered</li>
+              </ul>
+            </div>
+          </div>  
+          <div class="practicies">
+            <h3 class="third-header">How</h3>
+            <ul class="practicies-list">
+              <li>Provide Clarifications to the Development Team<span class="bullet">-</span></li>
+              <li>Participate in Progress Reviews<span class="bullet">-</span></li>
+              <li>Collaborate on Testing<span class="bullet">-</span></li>
+              <li>Gather Feedback for Refinements<span class="bullet">-</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section business-analysis initial process">
+      <div class="title-description">
+        <div class="title">
+          <h2 class="secodnary-title">Business Analysis</h2>
+          <h1 class="main-title">Deliverables</h1>
+        </div>
+        <p class="page-number">- 02</p>
+      </div>
+    </div>
+    <div class="placeholder-section"></div> -->
+    <script src="cursor.js"></script>
     <script src="hero-banner.js"></script>
+    <script src="scroll.js"></script>
+    <script src="tabs.js"></script>
     <script src="loader.js"></script>
 </body>
 </html>
