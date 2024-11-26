@@ -182,6 +182,26 @@ window.addEventListener('mousemove', (event) => {
     targetMouseY = 1 - ((event.clientY - rect.top) / rect.height);
 });
 
+// Touch start event to initialize the position
+window.addEventListener('touchstart', (event) => {
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        const rect = renderer.domElement.getBoundingClientRect();
+        targetMouseX = (touch.clientX - rect.left) / rect.width;
+        targetMouseY = 1 - ((touch.clientY - rect.top) / rect.height);
+    }
+});
+
+// Touch move event to update position dynamically
+window.addEventListener('touchmove', (event) => {
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        const rect = renderer.domElement.getBoundingClientRect();
+        targetMouseX = (touch.clientX - rect.left) / rect.width;
+        targetMouseY = 1 - ((touch.clientY - rect.top) / rect.height);
+    }
+});
+
 // Update mouse position
 function updateMousePosition() {
     currentMouseX += (targetMouseX - currentMouseX) * smoothness;
