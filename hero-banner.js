@@ -123,7 +123,7 @@ void main() {
     diff.x *= aspect;
     float distToMouse = length(diff);
 
-    float mouseEffect = smoothstep(0.3, 0.0, distToMouse);
+    float mouseEffect = smoothstep(0.35, 0.0, distToMouse);
 
     // Turbulence calculation
     vec2 turbulence = vec2(
@@ -141,8 +141,8 @@ void main() {
     vec4 color = texture2D(videoTexture, uv);
 
     vec3 black = vec3(0.0, 0.0, 0.0);
-    vec3 darkBlue = vec3(0.0, 0.1, 0.1);
-    vec3 blendedColor = mix(black, darkBlue, mouseEffect);
+    vec3 green = vec3(0.0, 0.1, 0.1);
+    vec3 blendedColor = mix(black, green, mouseEffect);
 
     color.rgb = color.rgb * (1.0 - mouseEffect) + blendedColor * mouseEffect;
 
@@ -210,13 +210,19 @@ window.addEventListener('resize', () => {
     uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
 });
 
+let lastTime = performance.now();
+
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
 
+    const now = performance.now();
+    const delta = (now - lastTime) / 1000; // Time delta in seconds
+    lastTime = now;
+
     // Update uniforms
+    uniforms.time.value += delta;
     updateMousePosition();
-    uniforms.time.value += 0.05;
 
     // Update the video texture
     if (video.readyState >= video.HAVE_CURRENT_DATA) {
