@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const sections = document.querySelectorAll('.section');
     let currentSectionIndex = 0;
-    let isAnimating = false;
+    let isAnimatingScrollJS = false; // Independent state for scroll.js
 
     let scrollTimeout;
     let accumulatedDeltaY = 0;
 
     function scrollToSection(index) {
-        if (index < 0 || index >= sections.length || isAnimating) return;
+        if (index < 0 || index >= sections.length || isAnimatingScrollJS) return;
 
         if (index > currentSectionIndex) {
             // Scrolling down
             if (index === 1 && currentSectionIndex === 0) {
-                isAnimating = true;
+                isAnimatingScrollJS = true;
                 triggerCoveringAnimation();
             } else {
                 performScroll(index);
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (index < currentSectionIndex) {
             // Scrolling up
             if (index === 0 && currentSectionIndex === 1) {
-                isAnimating = true;
+                isAnimatingScrollJS = true;
                 reverseCoveringAnimation();
             } else {
                 performScroll(index);
@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function performScroll(index) {
-        isAnimating = true;
+        isAnimatingScrollJS = true;
         const targetSection = sections[index];
         targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         const scrollEndHandler = () => {
             const rect = targetSection.getBoundingClientRect();
             if (Math.abs(rect.top) < 2) {
-                isAnimating = false;
+                isAnimatingScrollJS = false;
                 currentSectionIndex = index;
                 window.removeEventListener('scroll', scrollEndHandler);
             }
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (e.animationName === 'slideUp') {
                 secondSection.removeEventListener('animationend', onCoveringAnimationEnd);
                 startCountingAnimation();
+                isAnimatingScrollJS = false; // Reset state after animation
             }
         });
     }
@@ -70,32 +71,32 @@ document.addEventListener('DOMContentLoaded', function () {
         const headers = document.querySelectorAll('.third-header');
         const bodyText = document.querySelector('.body-text');
         const listItems = document.querySelectorAll('.practicies-list li');
-    
+
         // Reset styles and classes for hidden-content and title-description
         hiddenContent.classList.remove('visible');
         hiddenContent.style.opacity = '0';
         hiddenContent.style.pointerEvents = 'none';
-    
+
         titleDescription.style.transform = 'translateY(0)';
         titleDescription.style.transition = ''; // Remove any transition effect
-    
+
         // Reset all 'active' classes, re-add 'fade-blur', and reset styles for repeated reveals
         headers.forEach(header => {
             header.classList.remove('active'); // Ensure active class is removed
             header.classList.add('fade-blur'); // Reapply fade-blur
-            header.style.opacity = '1'; // Reset opacity to initial state
+            header.style.opacity = '0'; // Reset opacity to initial state
             header.style.filter = 'blur(10px)'; // Reset blur effect
-            header.style.transform = 'translateY(20px)'; // Reset transform for animation
+            header.style.transform = 'translateY(0px)'; // Reset transform for animation
             header.style.transition = ''; // Clear transition to ensure proper reset
         });
-    
+
         bodyText.classList.remove('active');
         bodyText.classList.add('fade-blur');
         bodyText.style.opacity = '0';
         bodyText.style.filter = 'blur(10px)';
         bodyText.style.transform = 'translateY(0px)';
         bodyText.style.transition = ''; // Clear transition
-    
+
         listItems.forEach(item => {
             item.classList.remove('active');
             item.classList.add('fade-blur');
@@ -104,20 +105,20 @@ document.addEventListener('DOMContentLoaded', function () {
             item.style.transform = 'translateY(0px)';
             item.style.transition = ''; // Clear transition
         });
-    
+
         secondSection.classList.remove('position-static'); // Ensure proper positioning
         secondSection.classList.add('animate-out');
-    
+
         secondSection.addEventListener('animationend', function onReverseAnimationEnd(e) {
             if (e.animationName === 'slideDown') {
                 secondSection.removeEventListener('animationend', onReverseAnimationEnd);
                 secondSection.classList.remove('animate-out');
                 secondSection.style.bottom = '-100vh'; // Revert to initial position
                 secondSection.style.top = null; // Reset top if modified
-    
+
                 // Ensure all states are reverted
                 hiddenContent.style.display = 'none';
-                isAnimating = false;
+                isAnimatingScrollJS = false; // Reset state after animation
                 currentSectionIndex = 0;
             }
         });
@@ -125,24 +126,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function startCountingAnimation() {
         const pageNumberElement = document.querySelector('.section.business-analysis.initial .page-number');
-
+        const initialSection = document.querySelector('.section.business-analysis.initial');
+    
         const duration = 1500; // 1.5 seconds
-        const interval = 75; // Update every 100ms
+        const interval = 75; // Update every 75ms
         const totalIterations = duration / interval;
         let iterations = 0;
-
+    
         const targetNumber = '01';
-
+    
         const prefix = pageNumberElement.textContent.replace(/\d+/g, '');
-
+    
+        // Start the counting animation
         const countingInterval = setInterval(() => {
             iterations++;
-
+    
+            // Calculate the progress of the animation (0 to 1)
+            const progress = iterations / totalIterations;
+    
+            // Ease in-out effect for smoother transitions
+            const easeInOut = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            const easedProgress = easeInOut(progress);
+    
+            // Interpolate blur value from 0px to 30px
+            const blurValue = 0 + (35 - 0) * easedProgress;
+    
+            // Interpolate background opacity from 1 to 0.7
+            const opacityValue = 1 + (0.8 - 1) * easedProgress; // This will decrease the opacity
+    
+            // Update the styles on the initial section
+            initialSection.style.backdropFilter = `blur(${blurValue}px)`;
+            initialSection.style.webkitBackdropFilter = `blur(${blurValue}px)`;
+            initialSection.style.backgroundColor = `rgba(0, 0, 0, ${opacityValue})`;
+    
             if (iterations >= totalIterations) {
                 clearInterval(countingInterval);
                 pageNumberElement.textContent = prefix + targetNumber;
+    
+                // Ensure final values are set
+                initialSection.style.backdropFilter = `blur(35px)`;
+                initialSection.style.webkitBackdropFilter = `blur(35px)`;
+                initialSection.style.backgroundColor = `rgba(0, 0, 0, 0.8)`;
+    
                 showRestOfContent();
             } else {
+                // Update the random number during the animation
                 const randomNumber = Math.floor(Math.random() * 100).toString().padStart(2, '0');
                 pageNumberElement.textContent = prefix + randomNumber;
             }
@@ -162,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
         secondSection.style.bottom = null;
         secondSection.style.top = null;
 
-        isAnimating = false;
+        isAnimatingScrollJS = false;
         currentSectionIndex = 1;
     }
 
@@ -172,6 +200,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const headers = document.querySelectorAll('.third-header');
         const bodyText = document.querySelector('.body-text');
         const listItems = document.querySelectorAll('.practicies-list li');
+        const buttonContainer = document.querySelector('.button-container');
+        const blocks = buttonContainer.querySelectorAll('.block'); // Select all blocks
     
         const hiddenContentHeight = hiddenContent.scrollHeight;
     
@@ -187,11 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
     
             // Apply blur animation to headers
             headers.forEach(header => {
-                header.classList.add('active'); // Trigger animation
-                header.classList.remove('fade-blur'); // Remove fade-blur to apply blur removal animation
-                header.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out';
+                header.classList.add('active');
+                header.classList.remove('fade-blur');
+                header.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
                 header.style.opacity = '1';
-                header.style.filter = 'blur(0)';
                 header.style.transform = 'translateY(0)';
             });
     
@@ -199,22 +228,28 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => {
                 bodyText.classList.add('active');
                 bodyText.classList.remove('fade-blur');
-                bodyText.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out, filter 0.6s ease-out';
+                bodyText.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
                 bodyText.style.opacity = '1';
-                bodyText.style.filter = 'blur(0)';
                 bodyText.style.transform = 'translateY(0)';
     
                 // Reveal list items with staggered animation
                 listItems.forEach((item, index) => {
                     setTimeout(() => {
                         item.classList.add('active');
-                        item.classList.remove('fade-blur');
-                        item.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out, filter 0.5s ease-out';
+                        item.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
                         item.style.opacity = '1';
-                        item.style.filter = 'blur(0)';
                         item.style.transform = 'translateY(0)';
                     }, index * 200); // Stagger list item animation
                 });
+    
+                // Slide in blocks sequentially after all list items are revealed
+                setTimeout(() => {
+                    blocks.forEach((block, index) => {
+                        setTimeout(() => {
+                            block.classList.add('active'); // Trigger block animation
+                        }, index * 300); // Stagger each block by 300ms
+                    });
+                }, listItems.length * 200); // Wait until list item animation completes
             }, 800); // Delay for body text after headers
         }, 1000); // Delay for slide-up animation
     }
@@ -222,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function onWheel(e) {
         e.preventDefault();
 
-        if (isAnimating) return;
+        if (isAnimatingScrollJS) return;
 
         accumulatedDeltaY += e.deltaY;
 
@@ -245,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('wheel', onWheel, { passive: false });
 
     window.addEventListener('keydown', function (e) {
-        if (isAnimating) return;
+        if (isAnimatingScrollJS) return;
 
         if (e.key === 'ArrowDown' || e.key === 'PageDown') {
             e.preventDefault();

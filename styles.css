@@ -271,9 +271,14 @@ body, html {
 }
 
 .placeholder-section {
+  position: absolute; /* Positioned to slide over initial-section */
   width: 100%;
-  height: 200vh;
+  height: 100vh;
   background-color: #fff;
+  z-index: 200; /* Default behind initial-section */
+  top: 0; /* Start aligned at the top of the viewport */
+  transform: translateY(100vh); /* Initially positioned below the viewport */
+  transition: transform 1.6s ease-in-out; /* Smooth transition for sliding */
 }
 
 .initial, .full {
@@ -287,7 +292,9 @@ body, html {
   overflow: visible;
   padding: 1vh 3vh 10vh 3vh;
 
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 1);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 
 .initial .title .main-title {
@@ -358,7 +365,7 @@ body, html {
 
   gap: 30px;
 
-  width: max-content;
+  width: 40%;
 }
 
 .practicies {
@@ -398,7 +405,7 @@ body, html {
   vertical-align: middle;
   text-align: left;
 
-  width: 50%;
+  width: 100%;
 
   color: #B4B4B4;
 }
@@ -658,4 +665,147 @@ body, html {
   height: 0%;
   background-color: red;
   z-index: 0;
+}
+
+/* Smooth collapsing of business-analysis.initial */
+.section.business-analysis.initial.collapsing {
+  height: 20vh; /* Collapse to 20vh */
+  position: fixed; /* Stick to the top of the viewport */
+  top: 0;
+  transition: height 0.8s ease-in-out;
+}
+
+/* Adjust title-description during collapse */
+.section.business-analysis.initial.collapsing .title-description {
+  font-size: 1.5vw; /* Decreased font size */
+  transition: font-size 0.8s ease-in-out;
+}
+
+/* Hide hidden-content */
+.section.business-analysis.initial.collapsing .hidden-content {
+  display: none;
+}
+
+/* Slide-up animation for placeholder-section */
+.placeholder-section.sliding-up {
+  transform: translateY(-100%);
+  transition: transform 0.8s ease-in-out;
+}
+
+.placeholder-section {
+  transform: translateY(100%); /* Start below the viewport */
+}
+
+/* Button Container */
+.image-button {
+  width: 350px;
+  height: 75px;
+  padding: 0;
+  border: none;
+  background: none;
+  display: flex;
+  cursor: none;
+  flex-direction: column;
+}
+
+/* Common Styles for Blocks */
+.block {
+  height: 25px;
+  overflow: hidden;
+  background-image: url('gradient.png');
+  background-repeat: no-repeat;
+  background-size: 350px 75px;
+  opacity: 0; /* Initially hidden */
+  transform: translateX(-100%); /* Start off-screen to the left */
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* For slide-in animation */
+}
+
+/* Active State for Slide-In */
+.block.active {
+  opacity: 1; /* Make visible */
+  transform: translateX(0); /* Slide into view */
+}
+
+/* Hover Effect */
+.image-button:hover .block1 {
+  transition: background-position 0.3s ease-in-out; /* Smooth hover transition */
+  background-position: 0 0;
+}
+
+.image-button:hover .block3 {
+  transition: background-position 0.3s ease-in-out; /* Smooth hover transition */
+  background-position: 100% -50px;
+}
+
+/* Block 1: Top third of the image */
+.block1 {
+  width: 70%;
+  align-self: flex-start;
+  z-index: 105;
+  background-position: 50% 0;
+}
+
+/* Block 2: Middle third of the image */
+.block2 {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 103;
+  justify-content: center;
+  overflow: hidden;
+  background-position: 50% -25px;
+}
+
+/* Block 3: Bottom third of the image */
+.block3 {
+  width: 75%;
+  align-self: flex-end;
+  z-index: 105;
+  background-position: 50% -50px;
+}
+
+/* Centered Text Animation */
+.image-button .block2 .button-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+  z-index: 104;
+  pointer-events: none;
+  transition: transform 0.5s ease, opacity 0.2s ease;
+}
+
+.image-button:hover .block2 .button-text {
+  transform: translate(-50%, -150%);
+  opacity: 0;
+}
+
+/* Add New Text for Slide-In */
+.image-button .block2::before {
+  content: "EXPLORE";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #fafafa;
+  text-align: center;
+  z-index: 104;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.5s ease, opacity 0.2s ease;
+}
+
+.image-button:hover .block2::before {
+  transform: translate(-50%, -50%);
+  opacity: 1;
 }
