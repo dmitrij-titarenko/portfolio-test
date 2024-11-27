@@ -272,6 +272,7 @@ body, html {
 
 .placeholder-section {
   position: absolute; /* Positioned to slide over initial-section */
+  overflow: hidden;
   width: 100%;
   height: 100vh;
   background-color: #fff;
@@ -279,6 +280,7 @@ body, html {
   top: 0; /* Start aligned at the top of the viewport */
   transform: translateY(100vh); /* Initially positioned below the viewport */
   transition: transform 1.6s ease-in-out; /* Smooth transition for sliding */
+  will-change: transform;
 }
 
 .initial, .full {
@@ -697,6 +699,7 @@ body, html {
 }
 
 /* Button Container */
+/* Button Container */
 .image-button {
   width: 350px;
   height: 75px;
@@ -706,6 +709,8 @@ body, html {
   display: flex;
   cursor: none;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Common Styles for Blocks */
@@ -716,96 +721,117 @@ body, html {
   background-repeat: no-repeat;
   background-size: 350px 75px;
   opacity: 0; /* Initially hidden */
-  transform: translateX(-100%); /* Start off-screen to the left */
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* For slide-in animation */
+  transform: translateX(-100%); /* Start off-screen */
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, background-position 0.4s ease-in-out;
+  will-change: transform, opacity, background-position;
 }
 
-/* Active State for Slide-In */
+/* Slide-In Animation State */
 .block.active {
-  opacity: 1; /* Make visible */
-  transform: translateX(0); /* Slide into view */
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* Hover Effect */
 .image-button:hover .block1 {
-  transition: background-position 0.3s ease-in-out; /* Smooth hover transition */
   background-position: 0 0;
 }
 
 .image-button:hover .block3 {
-  transition: background-position 0.3s ease-in-out; /* Smooth hover transition */
   background-position: 100% -50px;
 }
 
-/* Block 1: Top third of the image */
+/* Block 1: Top Section */
 .block1 {
   width: 70%;
   align-self: flex-start;
-  z-index: 105;
   background-position: 50% 0;
 }
 
-/* Block 2: Middle third of the image */
+/* Block 2: Middle Section */
 .block2 {
   width: 100%;
   display: flex;
   align-items: center;
-  z-index: 103;
   justify-content: center;
   overflow: hidden;
   background-position: 50% -25px;
 }
 
-/* Block 3: Bottom third of the image */
+/* Block 3: Bottom Section */
 .block3 {
   width: 75%;
   align-self: flex-end;
-  z-index: 105;
   background-position: 50% -50px;
 }
 
-/* Centered Text Animation */
+/* Button Text Styling */
 .image-button .block2 .button-text {
+  width: 100%;
+  position: relative;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 1; /* Ensure no vertical gaps */
+  height: 1em; /* Height matches the text size */ 
+  font-size: 16px; /* Explicit font size */
+  position: relative;
+}
+
+/* Top and Bottom Halves */
+.image-button .block2 .text-top,
+.image-button .block2 .text-bottom {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  z-index: 200;
+  height: 100%; /* Full height of the parent */
   font-family: 'Lato', sans-serif;
-  font-size: 16px;
+  font-size: inherit; /* Inherit font size */
   font-weight: 300;
   text-transform: uppercase;
   color: #fff;
   text-align: center;
-  z-index: 104;
   pointer-events: none;
-  transition: transform 0.5s ease, opacity 0.2s ease;
+  will-change: transform, opacity;
+  transition: transform 0.5s ease, opacity 0.3s ease;
+  overflow: hidden; /* Ensure no overflow */
 }
 
-.image-button:hover .block2 .button-text {
-  transform: translate(-50%, -150%);
-  opacity: 0;
+/* Top Half */
+.image-button .block2 .text-top {
+  top: 0;
+  clip-path: inset(0 0 50% 0); /* Clip bottom half */
 }
 
-/* Add New Text for Slide-In */
-.image-button .block2::before {
-  content: "EXPLORE";
+/* Bottom Half */
+.image-button .block2 .text-bottom {
+  bottom: 0;
+  clip-path: inset(50% 0 0 0); /* Clip top half */
+}
+
+/* Hover Effect */
+.image-button:hover .block2 .text-top {
+  transform: translateX(5px); /* Move to the right */
+}
+
+.image-button:hover .block2 .text-bottom {
+  transform: translateX(-5px); /* Move to the left */
+}
+
+.object-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 0);
-  font-family: 'Lato', sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-  text-transform: uppercase;
-  color: #fafafa;
-  text-align: center;
-  z-index: 104;
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.5s ease, opacity 0.2s ease;
+  height: 100%; /* Full height of the parent container */
+  top: 0;
+  overflow: hidden; /* Prevent model overflow */
 }
 
-.image-button:hover .block2::before {
-  transform: translate(-50%, -50%);
-  opacity: 1;
+.object-container {
+  border: 1px solid red; /* Debugging border */
+}
+
+.placeholder-section {
+  background-color: #000;
 }

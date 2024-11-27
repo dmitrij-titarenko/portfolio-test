@@ -259,9 +259,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     blocks.forEach((block, index) => {
                         setTimeout(() => {
                             block.classList.add('active'); // Trigger block animation
-                        }, index * 300); // Stagger each block by 300ms
+                        }, index * 400); // Stagger each block by 300ms
                     });
-                }, listItems.length * 200); // Wait until list item animation completes
+                }, listItems.length * 10); // Wait until list item animation completes
             }, 800); // Delay for body text after headers
         }, 1000); // Delay for slide-up animation
     }
