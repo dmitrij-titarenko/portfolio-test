@@ -71,51 +71,63 @@ document.addEventListener('DOMContentLoaded', function () {
         const headers = document.querySelectorAll('.third-header');
         const bodyText = document.querySelector('.body-text');
         const listItems = document.querySelectorAll('.practicies-list li');
-
+        const blocks = document.querySelectorAll('.block'); // Select all blocks
+    
         // Reset styles and classes for hidden-content and title-description
         hiddenContent.classList.remove('visible');
         hiddenContent.style.opacity = '0';
         hiddenContent.style.pointerEvents = 'none';
-
+    
         titleDescription.style.transform = 'translateY(0)';
         titleDescription.style.transition = ''; // Remove any transition effect
-
+    
         // Reset all 'active' classes, re-add 'fade-blur', and reset styles for repeated reveals
         headers.forEach(header => {
             header.classList.remove('active'); // Ensure active class is removed
             header.classList.add('fade-blur'); // Reapply fade-blur
             header.style.opacity = '0'; // Reset opacity to initial state
-            header.style.filter = 'blur(10px)'; // Reset blur effect
+            header.style.filter = 'blur(0px)'; // Reset blur effect
             header.style.transform = 'translateY(0px)'; // Reset transform for animation
             header.style.transition = ''; // Clear transition to ensure proper reset
         });
-
+    
         bodyText.classList.remove('active');
         bodyText.classList.add('fade-blur');
         bodyText.style.opacity = '0';
-        bodyText.style.filter = 'blur(10px)';
+        bodyText.style.filter = 'blur(0px)';
         bodyText.style.transform = 'translateY(0px)';
         bodyText.style.transition = ''; // Clear transition
-
+    
         listItems.forEach(item => {
             item.classList.remove('active');
             item.classList.add('fade-blur');
             item.style.opacity = '0';
-            item.style.filter = 'blur(10px)';
+            item.style.filter = 'blur(0px)';
             item.style.transform = 'translateY(0px)';
             item.style.transition = ''; // Clear transition
         });
-
+    
+        // Remove 'animate' class from each block
+        blocks.forEach(block => {
+            block.classList.remove('active');
+        });
+    
+        // Revert styles for .section.business-analysis.initial
+        secondSection.style.transition = 'background-color 1s ease, backdrop-filter 1s ease, -webkit-backdrop-filter 1s ease';
+        secondSection.style.backgroundColor = 'rgba(0, 0, 0, 1)'; // Reset background color
+        secondSection.style.backdropFilter = 'blur(0px)'; // Reset backdrop blur
+        secondSection.style.webkitBackdropFilter = 'blur(0px)'; // Reset WebKit backdrop blur
+    
         secondSection.classList.remove('position-static'); // Ensure proper positioning
         secondSection.classList.add('animate-out');
-
+    
         secondSection.addEventListener('animationend', function onReverseAnimationEnd(e) {
             if (e.animationName === 'slideDown') {
                 secondSection.removeEventListener('animationend', onReverseAnimationEnd);
                 secondSection.classList.remove('animate-out');
                 secondSection.style.bottom = '-100vh'; // Revert to initial position
                 secondSection.style.top = null; // Reset top if modified
-
+    
                 // Ensure all states are reverted
                 hiddenContent.style.display = 'none';
                 isAnimatingScrollJS = false; // Reset state after animation
